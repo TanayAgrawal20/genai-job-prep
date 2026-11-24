@@ -6,9 +6,11 @@ import {
 } from "../services/interview.api";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { InterviewContext } from "../interview.context.js";
+import { useAuth } from "../../auth/hooks/useAuth.js";
 
 export const useInterview = (interviewId) => {
   const context = useContext(InterviewContext);
+  const { user, loading: authLoading } = useAuth();
   const [resumeLoading, setResumeLoading] = useState(false);
 
   if (!context) {
@@ -109,12 +111,17 @@ const generateReport = useCallback(async ({
   }, []);
 
   useEffect(() => {
+    // Sirf tab fetch karein jab user logged in ho
+    if (authLoading || !user) {
+      return;
+    }
+
     if (interviewId) {
       getReportById(interviewId);
     } else {
       getReports();
     }
-  }, [interviewId, getReportById, getReports]);
+  }, [interviewId, user, authLoading, getReportById, getReports]);
 
   return {
     loading,

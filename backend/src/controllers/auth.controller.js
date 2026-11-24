@@ -4,18 +4,16 @@ const jwt = require("jsonwebtoken");
 const tokenBlacklistModel = require("../models/blacklist.model");
 
 /**
- * @name registerUser
- * @description Register a new user
- * @route POST /api/auth/register
+ * @name registerUserController
+ * @description register a new user, expects username, email and password in the request body
  * @access Public
  */
-
-exports.registerUser = async function registerUser(req, res) {
+async function registerUserController(req, res) {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({
-      message: "Please provide username, email, and password",
+      message: "Please provide username, email and password",
     });
   }
 
@@ -25,7 +23,7 @@ exports.registerUser = async function registerUser(req, res) {
 
   if (isUserAlreadyExists) {
     return res.status(400).json({
-      message: "Username or email already exists",
+      message: "Account already exists with this email address or username",
     });
   }
 
@@ -52,18 +50,15 @@ exports.registerUser = async function registerUser(req, res) {
       username: user.username,
       email: user.email,
     },
-    token,
   });
-};
+}
 
 /**
- * @name loginUser
- * @description Login a user
- * @route POST /api/auth/login
+ * @name loginUserController
+ * @description login a user, expects email and password in the request body
  * @access Public
  */
-
-exports.loginUser = async function loginUser(req, res) {
+async function loginUserController(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -95,30 +90,28 @@ exports.loginUser = async function loginUser(req, res) {
   );
 
   res.cookie("token", token);
-
   res.status(200).json({
-    message: "User logged in successfully",
+    message: "User loggedIn successfully.",
     user: {
       id: user._id,
       username: user.username,
       email: user.email,
-    }
+    },
   });
-};
+}
 
-/** * @name logoutUser
- * @description clear token from user cookies and add it to the blacklist
- * @route GET /api/auth/logout
- * @access Public
+/**
+ * @name logoutUserController
+ * @description clear token from user cookie and add the token in blacklist
+ * @access public
  */
-
-exports.logoutUser = async function logoutUser(req, res) {
+async function logoutUserController(req, res) {
   const token = req.cookies.token;
-  
+
   if (token) {
     await tokenBlacklistModel.create({ token });
   }
-  
+
   res.clearCookie("token");
 
   res.status(200).json({
@@ -126,20 +119,33 @@ exports.logoutUser = async function logoutUser(req, res) {
   });
 }
 
-/** * @name getMe
- * @description Get the logged in user details
- * @route GET /api/auth/get-me
- * @access Private
+/**
+ * @name getMeController
+ * @description get the current logged in user details.
+ * @access private
  */
+async function getMeController(req, res) {
+  const user = await userModel.findById(req.user.id);
 
-exports.getMe = async function getMe(req, res) {
-  try {
-    const user = await userModel.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
   }
+
+  res.status(200).json({
+    message: "User details fetched successfully",
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+  });
 }
+
+module.exports = {
+  registerUserController,
+  loginUserController,
+  logoutUserController,
+  getMeController,
+};

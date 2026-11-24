@@ -1,59 +1,61 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../auth.context";
-import { login, register, logOut, getMe } from "../services/auth.api";
+import { AuthContext } from "../auth.context.js";
+import { login, register, logout, getMe } from "../services/auth.api";
+
+
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  const { user, setUser, loading, setLoading } = context;
 
-  const handleLogin = async ({ email, password }) => {
-    setLoading(true);
-    try {
-      const data = await login({ email, password });
+    const context = useContext(AuthContext)
+    const { user, setUser, loading, setLoading } = context
 
-      setUser(data.user);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleRegister = async ({ username, email, password }) => {
-    setLoading(true);
-    try {
-      const data = await register({ username, email, password });
-
-      setUser(data.user);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    setLoading(true);
-
-    try {
-      const data = await logout();
-      setUser(null);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const getAndSetUser = async()=>{
-      const data = await getMe()
-      setUser(data.user)
-      setLoading(false)
+    const handleLogin = async ({ email, password }) => {
+        setLoading(true)
+        try {
+            const data = await login({ email, password })
+            setUser(data.user)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    getAndSetUser()
-    
-  },[])
+    const handleRegister = async ({ username, email, password }) => {
+        setLoading(true)
+        try {
+            const data = await register({ username, email, password })
+            setUser(data.user)
+        } finally {
+            setLoading(false)
+        }
+    }
 
-  return { user, loading, handleLogin, handleRegister, handleLogout };
-};
+    const handleLogout = async () => {
+        setLoading(true)
+        try {
+            await logout()
+            setUser(null)
+        } finally {
+            setLoading(false)
+        }
+    }
 
-// hooks layer manages both state and api layers
+    useEffect(() => {
+
+        const getAndSetUser = async () => {
+            try {
+                const data = await getMe()
+                setUser(data.user)
+            } catch {
+                setUser(null)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        getAndSetUser()
+
+    }, [setLoading, setUser])
+
+    return { user, loading, handleRegister, handleLogin, handleLogout }
+}

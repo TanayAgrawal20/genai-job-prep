@@ -17,8 +17,8 @@ Paste a job description, add your resume or a short self-description, and get a 
 </p>
 
 <p>
-  <a href="https://your-frontend-url.com"><img src="https://img.shields.io/badge/🌐_Live_Demo-Visit_App-brightgreen?style=for-the-badge" alt="Live Demo" /></a>
-  <a href="https://your-backend-url.com"><img src="https://img.shields.io/badge/⚙️_Backend_API-Deployed-blue?style=for-the-badge" alt="Backend API" /></a>
+  <a href="https://genai-job-prep-chi.vercel.app"><img src="https://img.shields.io/badge/🌐_Live_Demo-Visit_App-brightgreen?style=for-the-badge" alt="Live Demo" /></a>
+  <a href="https://genai-job-prep-backend.onrender.com"><img src="https://img.shields.io/badge/⚙️_Backend_API-Deployed-blue?style=for-the-badge" alt="Backend API" /></a>
 </p>
 
 </div>
@@ -49,10 +49,12 @@ The project is deployed and ready to try:
 
 | | Link |
 |---|---|
-| 🖥️ **Frontend (App)** | [your-frontend-url.com](https://your-frontend-url.com) |
-| ⚙️ **Backend (API)** | [your-backend-url.com](https://your-backend-url.com) |
+| 🖥️ **Frontend (App)** — Vercel | [genai-job-prep-chi.vercel.app](https://genai-job-prep-chi.vercel.app) |
+| ⚙️ **Backend (API)** — Render | [genai-job-prep-backend.onrender.com](https://genai-job-prep-backend.onrender.com) |
 
 > 💡 Create a free account on the live app, paste a job description, and generate your first interview report in under a minute.
+>
+> ⏳ If the backend has been idle, the first request may take a few seconds while the Render service wakes up.
 
 ---
 
@@ -249,7 +251,7 @@ Run these commands from their respective package directories.
 
 ## 🚀 Deployment
 
-The app is deployed as two separate services: the **frontend** (Vite build) and the **backend** (Express API) with a hosted MongoDB database.
+The app is deployed as two separate services: the **frontend** (Vite build) on **Vercel** and the **backend** (Express API) on **Render**, with a hosted MongoDB database.
 
 **Backend environment variables (on your hosting platform):**
 
@@ -257,13 +259,13 @@ The app is deployed as two separate services: the **frontend** (Vite build) and 
 MONGO_URI=your-hosted-mongodb-connection-string
 JWT_SECRET=your-long-random-secret
 GOOGLE_GENAI_API_KEY=your-google-gemini-api-key
-FRONTEND_URL=https://your-frontend-url.com
+FRONTEND_URL=https://genai-job-prep-chi.vercel.app
 ```
 
 **Frontend environment variable (set before building):**
 
 ```dotenv
-VITE_API_URL=https://your-backend-url.com
+VITE_API_URL=https://genai-job-prep-backend.onrender.com
 ```
 
 **Deployment checklist**
